@@ -1,0 +1,218 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model StatusPageViewModel
+@{
+    var backgroundImage = String.Format(Model.Campaign.CampaignContent.BackgroundCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.BackgroundCloudinaryImage.RelativePath);
+
+    int weeksTillCampaignEnds = (int)Math.Floor((((DateTime)Model.Campaign.CampaignSettings.CampaignEndDate).Date - DateTime.UtcNow.Date).TotalDays / 7);
+    int daysTillCampaignEnds = (int)Math.Floor((((DateTime)Model.Campaign.CampaignSettings.CampaignEndDate).Date - DateTime.UtcNow.Date).TotalDays % 7);
+
+    string campaignsEndsText = weeksTillCampaignEnds != 1 ? weeksTillCampaignEnds + " Weeks " : "1 Week ";
+
+    campaignsEndsText += daysTillCampaignEnds != 1 ? daysTillCampaignEnds + " Days" : "1 Day";
+
+}
+<style>
+    body {
+        background: #fdece8 url(@backgroundImage) center top no-repeat;
+    }
+</style>
+<!--Wrapper Starts Here-->
+<div class="wrapper offer-page">
+    <!--Page Content Starts Here-->
+    <div class="page mx-auto">
+        <!--Header Starts Here-->
+        <header class="header separator">
+            <div class="offer-date text-center">
+                <span class="text-uppercase"><strong>@campaignsEndsText</strong> left to enter</span>
+            </div>
+           
+        </header>
+        <!--Header End Here-->
+        <!--content Start -->
+        <div class="content">
+            <!--success msg start Here-->
+            <div class="success-msg separator">
+                <div class="container">
+                    <h1 class="text-uppercase"><strong class="d-block">@Model.Campaign.ReferralPageText </strong> @Model.Campaign.ReferralPageSecondaryText</h1>
+                </div>
+            </div>
+            <!--success msg End Here-->
+            <!--successful referrals start Here-->
+            <section class="referrals separator">
+                <div class="container">
+                    <h4 class="text-uppercase">sucessful referrals:</h4>
+                    <span class="total-entry">You have <span class="link-color">@Model.Lead.Referrals.Where(a => a.Status == "Success").Count()</span> successful entries</span>
+
+                    @if (Model.Lead.Referrals.Where(a => a.Status == "Success").Count() > 0)
+                    {
+                        <div class="table-responsive text-uppercase">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th class="person-name">Name</th>
+                                    <th class="person-email">email</th>
+                                    <th class="person-date">send date</th>
+                                    <th class="gray-color">medium</th>
+                                </tr>
+                                @foreach (var referral in Model.Lead.Referrals.Where(a => a.Status == "Success"))
+                                {
+                                    <tr>
+                                        <td>@referral.FullName</td>
+                                        <td>@referral.Email</td>
+                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
+                                        <td class="gray-color"><strong>@referral.Medium</strong></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    }
+                </div>
+            </section>
+            <!--successful referrals End Here-->
+            <!--social tab strat Here-->
+            <section class="social-share separator">
+                <div class="container">
+                    <h4 class="text-uppercase">share + invite more friends</h4>
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a class="btn btn-info" data-toggle="tab" href="#facebook">Facebook</a></li>
+                        <li><a class="btn btn-primary" data-toggle="tab" href="#twitter">Twitter</a></li>
+                        <li><a class="btn btn-danger" data-toggle="tab" href="#gmail">Google +</a></li>
+                        <li><a class="btn btn-warning" data-toggle="tab" href="#unique">Unique Link</a></li>
+                        <li><a class="btn btn-success" data-toggle="tab" href="#email">Email</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div id="facebook" class="tab-pane fade in active show">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h5 class="text-uppercase">share on facebook</h5>
+                                    <p>
+                                        Every person who enters the competition from this Facebook Post will earn you an extra entry.
+                                    </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="@string.Format("https://www.facebook.com/dialog/share?href={0}&app_id={1}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "F")),Configs.FacebookLeadgenAppId)" class="btn btn-warning pull-right">share now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="twitter" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h5 class="text-uppercase">share on twitter</h5>
+                                    <p>
+                                        Every person who enters the competition from this Twitter Post will earn you an extra entry.
+                                    </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="@string.Format("http://twitter.com/share?text={1}&url={0}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "T")),  Uri.EscapeDataString(Model.Campaign.TwitterText + ""))" class="btn btn-warning pull-right">share now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="gmail" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <h5 class="text-uppercase">share with g+</h5>
+                                    <p>
+                                        Every person who enters the competition from this G+ link will earn you an extra entry.
+                                    </p>
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="@string.Format("https://plus.google.com/share?url={0}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "G")))" class="btn btn-warning pull-right">share now</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="unique" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5 class="text-uppercase">share with unique link</h5>
+                                    <p>
+                                        Every person who enters the competition from this unique link will earn you an extra entry.
+                                    </p>
+
+                                    <input style="background-color:white" type="text" value="@string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "U")" readonly />
+
+                                </div>
+                            </div>
+                        </div>
+                        <div id="email" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5 class="text-uppercase">share by email</h5>
+                                    <p>
+                                        Every person who enters the competition from your email will earn you an extra entry.
+                                    </p>
+                                    <form asp-action="SendReferral" class="form-inline">
+                                        <input type="hidden" name="LeadId" value="@Model.Lead.Id" />
+                                        <input type="hidden" name="Slug" value="@Model.Campaign.Slug" />
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Name" placeholder="First name" style="margin:0px 5px;" required />
+                                            <span validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Surname" placeholder="Surname" style="margin:0px 5px;" required />
+                                            <span validation-for="Surname" class="text-danger"></span>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="Email" placeholder="Email" style="margin:0px 5px;" required />
+                                            <span validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-warning">Send Email</button>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--social tab End Here-->
+            @if (Model.Lead.Referrals.Where(a => a.Status != "Success").Count() > 0)
+            {
+                <!--your referrals start Here-->
+                <section class="referrals invite-list separator">
+                    <div class="container">
+                        <h4 class="text-uppercase">Your referrals:</h4>
+                        <div class="table-responsive text-uppercase">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <th class="person-name">Name</th>
+                                    <th class="person-email">email</th>
+                                    <th class="person-date">send date</th>
+                                    <th class="link-color">invitation status</th>
+                                </tr>
+                                @foreach (var referral in Model.Lead.Referrals.Where(a => a.Status != "Success"))
+                                {
+                                    <tr>
+                                        <td>@referral.FullName</td>
+                                        <td>@referral.Email</td>
+                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
+                                        <td class="gray-color"><strong>@referral.Status</strong></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                <!--your referrals End Here-->
+            }
+        </div>
+        <!--content End -->
+        <!--Footer Start -->
+
+        <div class="footer-text text-center">
+            <div class="container">
+                @Html.Raw(Model.Campaign.LandingPageFooterText)
+            </div>
+        </div>
+
+        <!--Footer End -->
+    </div>
+
+</div>
+
+@section Scripts {
+}

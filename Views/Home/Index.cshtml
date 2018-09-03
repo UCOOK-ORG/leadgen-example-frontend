@@ -1,0 +1,165 @@
+﻿@model EntryPageViewModel
+@{
+
+    var backgroundImage = String.Format(Model.Campaign.CampaignContent.BackgroundCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.BackgroundCloudinaryImage.RelativePath);
+
+    ViewBag.FacebookImage = String.Format(Model.Campaign.CampaignContent.SocialContent.FacebookCloudinaryImage.BaseUrl + "h_628,w_1200,c_fill/" + Model.Campaign.CampaignContent.SocialContent.FacebookCloudinaryImage.RelativePath);
+    ViewBag.FacebookTitle = Model.Campaign.CampaignContent.SocialContent.FacebookTitle;
+    ViewBag.FacebookDescription = Model.Campaign.CampaignContent.SocialContent.FacebookDescription;
+}
+
+<style>
+    body {
+        background: #fdece8 url(@backgroundImage) center top no-repeat;
+    }
+</style>
+<!--Wrapper Starts Here-->
+<div class="wrapper">
+    <!--Page Content Starts Here-->
+    <div class="page mx-auto">
+        <!--Header Starts Here-->
+        <header class="header separator">
+            <img />
+
+        </header>
+        <!--Header End Here-->
+        <!--content Start -->
+        <div class="content">
+            <!--section winner form Start -->
+            <form class="winner-form separator" asp-action="SignUp">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Entry.CampaignId" value="@Model.Campaign.Id" />
+                <input type="hidden" asp-for="Entry.Slug" value="@Model.Campaign.Slug" />
+                <div class="container">
+                    <h1 class="text-center">
+                        @Html.Raw(Model.Campaign.CampaignContent.SignUpPage.MainText)
+                    </h1>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h3 class="text-uppercase">Enter your details</h3>
+                            <ul class="field-list">
+                                <li class="d-md-flex justify-content-between">
+                                    <div class="field-set first-name">
+                                        <input asp-for="Entry.Name" placeholder="Full name" />
+                                        <span asp-validation-for="Entry.Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set last-name">
+                                        <input placeholder="Surname" asp-for="Entry.Surname" />
+                                        <span asp-validation-for="Entry.Surname" class="text-danger"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="field-set">
+                                        <input placeholder="Email Address" asp-for="Entry.Email" />
+                                        <span asp-validation-for="Entry.Email" class="text-danger"></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="field-set">
+                                        <input placeholder="Phone number" asp-for="Entry.Phone" />
+                                        <span asp-validation-for="Entry.Phone" class="text-danger"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <h3 class="text-uppercase list-title">Let your friends know</h3>
+                            <ul class="frnd-field-list">
+                                <li class="d-md-flex justify-content-between">
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[0].Name" placeholder="First name" />
+                                        <span asp-validation-for="Entry.Referral[0].Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[0].Surname" placeholder="Surname" />
+                                        <span asp-validation-for="Entry.Referral[0].Surname" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-email">
+                                        <input type="text" asp-for="Entry.Referral[0].Email" placeholder="Email" />
+                                        <span asp-validation-for="Entry.Referral[0].Email" class="text-danger"></span>
+                                    </div>
+                                </li>
+                                <li class="d-md-flex justify-content-between">
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[1].Name" placeholder="First name" />
+                                        <span asp-validation-for="Entry.Referral[1].Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[1].Surname" placeholder="Surname" />
+                                        <span asp-validation-for="Entry.Referral[1].Surname" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-email">
+                                        <input type="text" asp-for="Entry.Referral[1].Email" placeholder="Email" />
+                                        <span asp-validation-for="Entry.Referral[1].Email" class="text-danger"></span>
+                                    </div>
+                                </li>
+                                <li class="d-md-flex justify-content-between">
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[2].Name" placeholder="First name" />
+                                        <span asp-validation-for="Entry.Referral[2].Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-name">
+                                        <input type="text" asp-for="Entry.Referral[2].Surname" placeholder="Surname" />
+                                        <span asp-validation-for="Entry.Referral[2].Surname" class="text-danger"></span>
+                                    </div>
+                                    <div class="field-set frnd-email">
+                                        <input type="text" asp-for="Entry.Referral[2].Email" placeholder="Email" />
+                                        <span asp-validation-for="Entry.Referral[2].Email" class="text-danger"></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="form-note d-block">Already entered competition? <a class="link-color" href="#">Click here</a> to check your status</span>
+                    <div class="form-btn text-center">
+                        <span asp-validation-for="Entry.TaC" class="text-danger"></span>
+                    </div>
+                    <div class="form-btn text-center">
+                        <label class="chk-wrap position-relative">
+                            I agree to
+                            @Html.CheckBoxFor(m => m.Entry.TaC, new { @class = "custom-control-input" })
+
+                            <span class="link-color position-relative">Ts + Cs</span>
+                        </label>
+
+                        <br class="d-md-none" />
+                        <button type="submit" class="btn btn-warning">enter now</button>
+                    </div>
+
+                </div>
+            </form>
+            <!--section winner form end -->
+
+        </div>
+        <!--content End -->
+        <!--Footer Start -->
+        <footer class="footer">
+            <div class="footer-text text-center">
+                <div class="container">
+                    @Html.Raw(Model.Campaign.CampaignContent.FooterText)
+                </div>
+            </div>
+        </footer>
+        <!--Footer End -->
+    </div>
+    <!--Page Content End Here-->
+</div>
+<!--Wrapper Ends Here-->
+
+@section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // extend range validator method to treat checkboxes differently
+        var defaultRangeValidator = $.validator.methods.range;
+        $.validator.methods.range = function (value, element, param) {
+            if (element.type == 'checkbox') {
+                // if it's a checkbox return true if it is checked
+                return element.checked;
+            } else {
+                // otherwise run the default validation function
+                return defaultRangeValidator.call(this, value, element, param);
+            }
+        }
+    </script>
+}

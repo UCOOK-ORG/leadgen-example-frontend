@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.FacebookTitle</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="/leadgen/assets/css/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="/leadgen/assets/css/global.css" media="screen">
+    <link rel="stylesheet" href="/leadgen/assets/css/style.css" media="screen">
+    <link rel="stylesheet" href="/leadgen/assets/css/responsive.css" media="screen">
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@ViewBag.FacebookTitle" />
+    <meta property="og:description" content="@ViewBag.FacebookDescription" />
+    <meta property="og:image" content="@ViewBag.FacebookImage" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="628" />
+</head>
+
+<body>
+@{ await Html.RenderPartialAsync("_Alerts"); }
+@RenderBody();
+
+<script src="/leadgen/assets/js/jquery-3-1.js"></script>
+<script src="/leadgen/assets/js/bootstrap.min.js"></script>
+<script src="~/lib/slick-carousel/slick/slick.min.js"></script>
+
+@RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,22 @@
+﻿@using Newtonsoft.Json
+@using LeadgenFrontend.Models
+@{
+    try
+    {
+        var alerts = TempData.ContainsKey(Alert.TempDataKey) ?
+            JsonConvert.DeserializeObject<List<Alert>>((string) TempData[Alert.TempDataKey]) :
+            new List<Alert>();
+        if (alerts.Any())
+        {
+            foreach (var alert in alerts)
+            {
+                <div class="alert alert-@alert.AlertStyle">
+                    @alert.Message
+                </div>
+            }
+        }
+    }
+    catch
+    {
+    }
+}
