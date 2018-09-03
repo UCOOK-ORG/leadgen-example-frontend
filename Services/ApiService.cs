@@ -14,7 +14,7 @@ namespace LeadgenFrontend.Services
         public ApiService()
         {
             var httpClient = new HttpClient();
-            Client = new Client("https://leadgen-silvertree.azurewebsites.net", httpClient);
+            Client = new Client(Configs.ApiUrl, httpClient);
         }
     }
 }

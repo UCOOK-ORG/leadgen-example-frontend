@@ -35,7 +35,7 @@
             <!--success msg start Here-->
             <div class="success-msg separator">
                 <div class="container">
-                    <h1 class="text-uppercase"><strong class="d-block">@Model.Campaign.ReferralPageText </strong> @Model.Campaign.ReferralPageSecondaryText</h1>
+                    <h1 class="text-uppercase"><strong class="d-block">@Model.Campaign.CampaignContent.StatusPage.MainText </strong> @Model.Campaign.CampaignContent.StatusPage.SecondaryText</h1>
                 </div>
             </div>
             <!--success msg End Here-->
@@ -43,9 +43,9 @@
             <section class="referrals separator">
                 <div class="container">
                     <h4 class="text-uppercase">sucessful referrals:</h4>
-                    <span class="total-entry">You have <span class="link-color">@Model.Lead.Referrals.Where(a => a.Status == "Success").Count()</span> successful entries</span>
+                    <span class="total-entry">You have <span class="link-color">@Model.CampaignLead.EmailReferrals.Count()</span> successful entries</span>
 
-                    @if (Model.Lead.Referrals.Where(a => a.Status == "Success").Count() > 0)
+                    @if (Model.CampaignLead.EmailReferrals.Count() > 0)
                     {
                         <div class="table-responsive text-uppercase">
                             <table class="table table-borderless">
@@ -55,13 +55,13 @@
                                     <th class="person-date">send date</th>
                                     <th class="gray-color">medium</th>
                                 </tr>
-                                @foreach (var referral in Model.Lead.Referrals.Where(a => a.Status == "Success"))
+                                @foreach (var referral in Model.CampaignLead.EmailReferrals)
                                 {
                                     <tr>
-                                        <td>@referral.FullName</td>
+                                        <td>@referral.Name  @referral.Surname</td>
                                         <td>@referral.Email</td>
-                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
-                                        <td class="gray-color"><strong>@referral.Medium</strong></td>
+                                        @*<td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>*@
+                                        @*<td class="gray-color"><strong>@referral.Medium</strong></td>*@
                                     </tr>
                                 }
                             </table>
@@ -92,7 +92,7 @@
                                     </p>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="@string.Format("https://www.facebook.com/dialog/share?href={0}&app_id={1}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "F")),Configs.FacebookLeadgenAppId)" class="btn btn-warning pull-right">share now</a>
+                                    <a href="@string.Format("https://www.facebook.com/dialog/share?href={0}&app_id={1}", Uri.EscapeDataString(string.Format("{0}/r/{1}/{2}",Configs.WebsiteBaseUrl, Model.CampaignLead.Id, "F")),Configs.FacebookLeadgenAppId)" class="btn btn-warning pull-right">share now</a>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +105,7 @@
                                     </p>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="@string.Format("http://twitter.com/share?text={1}&url={0}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "T")),  Uri.EscapeDataString(Model.Campaign.TwitterText + ""))" class="btn btn-warning pull-right">share now</a>
+                                    <a href="@string.Format("http://twitter.com/share?text={1}&url={0}", Uri.EscapeDataString(string.Format("{0}/r/{1}/{2}",Configs.WebsiteBaseUrl, Model.CampaignLead.Id, "T")),  Uri.EscapeDataString(Model.Campaign.CampaignContent.SocialContent.TwitterMessage + ""))" class="btn btn-warning pull-right">share now</a>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                     </p>
                                 </div>
                                 <div class="col-md-3">
-                                    <a href="@string.Format("https://plus.google.com/share?url={0}", Uri.EscapeDataString(string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "G")))" class="btn btn-warning pull-right">share now</a>
+                                    <a href="@string.Format("https://plus.google.com/share?url={0}", Uri.EscapeDataString(string.Format("{0}/r/{1}/{2}",Configs.WebsiteBaseUrl, Model.CampaignLead.Id, "G")))" class="btn btn-warning pull-right">share now</a>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                         Every person who enters the competition from this unique link will earn you an extra entry.
                                     </p>
 
-                                    <input style="background-color:white" type="text" value="@string.Format("{0}/cr/{1}/{2}",Configs.WebsiteBaseUrl, Model.Lead.Id, "U")" readonly />
+                                    <input style="background-color:white" type="text" value="@string.Format("{0}/r/{1}/{2}",Configs.WebsiteBaseUrl, Model.CampaignLead.Id, "U")" readonly />
 
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                                         Every person who enters the competition from your email will earn you an extra entry.
                                     </p>
                                     <form asp-action="SendReferral" class="form-inline">
-                                        <input type="hidden" name="LeadId" value="@Model.Lead.Id" />
+                                        <input type="hidden" name="LeadId" value="@Model.CampaignLead.Id" />
                                         <input type="hidden" name="Slug" value="@Model.Campaign.Slug" />
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="Name" placeholder="First name" style="margin:0px 5px;" required />
@@ -170,7 +170,7 @@
                 </div>
             </section>
             <!--social tab End Here-->
-            @if (Model.Lead.Referrals.Where(a => a.Status != "Success").Count() > 0)
+            @if (Model.CampaignLead.EmailReferrals.Count() > 0)
             {
                 <!--your referrals start Here-->
                 <section class="referrals invite-list separator">
@@ -184,13 +184,13 @@
                                     <th class="person-date">send date</th>
                                     <th class="link-color">invitation status</th>
                                 </tr>
-                                @foreach (var referral in Model.Lead.Referrals.Where(a => a.Status != "Success"))
+                                @foreach (var referral in Model.CampaignLead.EmailReferrals)
                                 {
                                     <tr>
-                                        <td>@referral.FullName</td>
+                                        <td>@referral.Name  @referral.Surname</td>
                                         <td>@referral.Email</td>
-                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
-                                        <td class="gray-color"><strong>@referral.Status</strong></td>
+                                        @*<td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
+                                        <td class="gray-color"><strong>@referral.Status</strong></td>*@
                                     </tr>
                                 }
                             </table>
@@ -205,7 +205,7 @@
 
         <div class="footer-text text-center">
             <div class="container">
-                @Html.Raw(Model.Campaign.LandingPageFooterText)
+                @Html.Raw(Model.Campaign.CampaignContent.FooterText)
             </div>
         </div>
 

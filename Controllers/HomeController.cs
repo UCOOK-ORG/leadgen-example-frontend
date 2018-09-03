@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using LeadgenFrontend.Models;
 using LeadgenFrontend.Services;
 using LeadgenWebApi;
+using Microsoft.AspNetCore.Http;
 
 namespace LeadgenFrontend.Controllers
 {
@@ -47,8 +48,13 @@ namespace LeadgenFrontend.Controllers
         {
             try
             {
+                var medium = HttpContext.Session.GetString(model.Entry.CampaignId + "-Medium");
+                var referralId = HttpContext.Session.GetInt32(model.Entry.CampaignId + "-ReferralId");
+
                 var lead = await _apiService.Client.ApiLeadGenerationSignUpPostAsync(model.Entry.CampaignId, model.Entry.Email,
-                model.Entry.Phone, model.Entry.Name, model.Entry.Surname, null, null, null, null);
+                model.Entry.Phone, model.Entry.Name, model.Entry.Surname, referralId, referralId != null ? "platform" : null, medium, model.Entry.Slug);
+
+                HttpContext.Session.SetInt32(lead.CampaignId + "-LeadId", (int)lead.Id);
 
                 return RedirectToAction("Status", new { slug = model.Entry.Slug });
             }
@@ -69,10 +75,12 @@ namespace LeadgenFrontend.Controllers
         {
             try
             {
-                var campaign = _apiService.Client.ApiLeadGenerationGetCampaignGetAsync(null, slug);
-                var lead = _apiService.Client.ApiLeadGenerationGetLeadGetAsync(null);
+                var campaign = await _apiService.Client.ApiLeadGenerationGetCampaignGetAsync(null, slug);
 
-                var model = new StatusPageViewModel() { Campaign = await campaign, CampaignLead = await lead };
+                var leadId = HttpContext.Session.GetInt32(campaign.Id + "-LeadId");
+                var lead = await _apiService.Client.ApiLeadGenerationGetLeadGetAsync(leadId);
+
+                var model = new StatusPageViewModel() { Campaign = campaign, CampaignLead = lead };
 
                 return View(model);
             }
@@ -85,6 +93,75 @@ namespace LeadgenFrontend.Controllers
             {
                 AlertDanger(ex.Message);
                 return RedirectToAction("Index", new { slug = slug });
+            }
+        }
+
+        [Route("/r/{medium}/{referralId}")]
+        public async Task<IActionResult> Referral(string medium, int referralId)
+        {
+            try
+            {
+
+                string mediumDestination;
+                switch (medium.ToUpperInvariant())
+                {
+                    case "G":
+                        mediumDestination = "G+";
+                        break;
+                    case "F":
+                        mediumDestination = "Facebook";
+                        break;
+                    case "T":
+                        mediumDestination = "Twitter";
+                        break;
+                    case "U":
+                        mediumDestination = "UniqueLink";
+                        break;
+                    default:
+                        mediumDestination = "";
+                        break;
+                }
+
+                var lead = await _apiService.Client.ApiLeadGenerationGetLeadGetAsync(referralId);
+                var campaign = await _apiService.Client.ApiLeadGenerationGetCampaignGetAsync(lead.CampaignId, null);
+
+                HttpContext.Session.SetString(campaign.Id + "-Medium", mediumDestination);
+                HttpContext.Session.SetInt32(campaign.Id + "-ReferralId", referralId);
+
+                return RedirectToAction("Index", new { slug = campaign.Slug });
+            }
+            catch (SwaggerException<ErrorResponse> ex)
+            {
+                AlertDanger(ex.Result.Message);
+                return Redirect("https://ucook.co.za");
+            }
+            catch (Exception ex)
+            {
+                AlertDanger(ex.Message);
+                return Redirect("https://ucook.co.za");
+            }
+        }
+
+        public IActionResult SendReferral(int leadId, string slug, LeadGenReferralViewModel data)
+        {
+            try
+            {
+                _apiService.Client.ApiLeadGenerationSendReferralEmailPostAsync(data.Email, data.Name, data.Surname, leadId);
+
+                return RedirectToAction("Status", new { slug = slug });
+            }
+            catch (SwaggerException<ErrorResponse> ex)
+            {
+                AlertDanger(ex.Result.Message);
+                return RedirectToAction("Status", new
+                {
+                    slug = slug
+                });
+            }
+            catch (Exception ex)
+            {
+                AlertDanger(ex.Message);
+                return RedirectToAction("Status", new { slug = slug });
             }
         }
 
