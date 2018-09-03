@@ -4,6 +4,8 @@
 @model StatusPageViewModel
 @{
     var backgroundImage = String.Format(Model.Campaign.CampaignContent.BackgroundCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.BackgroundCloudinaryImage.RelativePath);
+    var headerImage = String.Format(Model.Campaign.CampaignContent.StatusPage.HeaderCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.StatusPage.HeaderCloudinaryImage.RelativePath);
+    var footerImage = String.Format(Model.Campaign.CampaignContent.StatusPage.FooterCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.StatusPage.FooterCloudinaryImage.RelativePath);
 
     int weeksTillCampaignEnds = (int)Math.Floor((((DateTime)Model.Campaign.CampaignSettings.CampaignEndDate).Date - DateTime.UtcNow.Date).TotalDays / 7);
     int daysTillCampaignEnds = (int)Math.Floor((((DateTime)Model.Campaign.CampaignSettings.CampaignEndDate).Date - DateTime.UtcNow.Date).TotalDays % 7);
@@ -27,7 +29,7 @@
             <div class="offer-date text-center">
                 <span class="text-uppercase"><strong>@campaignsEndsText</strong> left to enter</span>
             </div>
-           
+            <img style="width: 100%" src="@headerImage" />
         </header>
         <!--Header End Here-->
         <!--content Start -->
@@ -43,9 +45,9 @@
             <section class="referrals separator">
                 <div class="container">
                     <h4 class="text-uppercase">sucessful referrals:</h4>
-                    <span class="total-entry">You have <span class="link-color">@Model.CampaignLead.EmailReferrals.Count()</span> successful entries</span>
+                    <span class="total-entry">You have <span class="link-color">@Model.CampaignLead.EmailReferrals.Count(a => a.Status == "Success")</span> successful entries</span>
 
-                    @if (Model.CampaignLead.EmailReferrals.Count() > 0)
+                    @if (Model.CampaignLead.EmailReferrals.Any(a => a.Status == "Success"))
                     {
                         <div class="table-responsive text-uppercase">
                             <table class="table table-borderless">
@@ -53,15 +55,13 @@
                                     <th class="person-name">Name</th>
                                     <th class="person-email">email</th>
                                     <th class="person-date">send date</th>
-                                    <th class="gray-color">medium</th>
                                 </tr>
                                 @foreach (var referral in Model.CampaignLead.EmailReferrals)
                                 {
                                     <tr>
                                         <td>@referral.Name  @referral.Surname</td>
                                         <td>@referral.Email</td>
-                                        @*<td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>*@
-                                        @*<td class="gray-color"><strong>@referral.Medium</strong></td>*@
+                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
                                     </tr>
                                 }
                             </table>
@@ -170,7 +170,7 @@
                 </div>
             </section>
             <!--social tab End Here-->
-            @if (Model.CampaignLead.EmailReferrals.Count() > 0)
+            @if (Model.CampaignLead.EmailReferrals.Any(a => a.Status != "Success"))
             {
                 <!--your referrals start Here-->
                 <section class="referrals invite-list separator">
@@ -184,13 +184,13 @@
                                     <th class="person-date">send date</th>
                                     <th class="link-color">invitation status</th>
                                 </tr>
-                                @foreach (var referral in Model.CampaignLead.EmailReferrals)
+                                @foreach (var referral in Model.CampaignLead.EmailReferrals.Where(a => a.Status != "Success"))
                                 {
                                     <tr>
                                         <td>@referral.Name  @referral.Surname</td>
                                         <td>@referral.Email</td>
-                                        @*<td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
-                                        <td class="gray-color"><strong>@referral.Status</strong></td>*@
+                                        <td>@String.Format(((DateTime)referral.SendDate).ToShortDateString())</td>
+                                        <td class="gray-color"><strong>@referral.Status</strong></td>
                                     </tr>
                                 }
                             </table>
@@ -202,13 +202,14 @@
         </div>
         <!--content End -->
         <!--Footer Start -->
-
-        <div class="footer-text text-center">
-            <div class="container">
-                @Html.Raw(Model.Campaign.CampaignContent.FooterText)
+        <footer class="footer">
+            <img style="width: 100%" src="@footerImage" />
+            <div class="footer-text text-center">
+                <div class="container">
+                    @Html.Raw(Model.Campaign.CampaignContent.FooterText)
+                </div>
             </div>
-        </div>
-
+        </footer>
         <!--Footer End -->
     </div>
 

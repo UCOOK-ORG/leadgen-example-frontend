@@ -7,8 +7,8 @@ namespace LeadgenFrontend
 {
     public static class Configs
     {
-        public static string WebsiteBaseUrl = "https://ucook.co.za";
-        public static string FacebookLeadgenAppId = "";
+        public static string WebsiteBaseUrl = "https://leadgen-frontend.azurewebsites.net";
+        public static string FacebookLeadgenAppId = "230384067466881";
         public static string ApiUrl = "https://leadgen-silvertree.azurewebsites.net";
     }
 }

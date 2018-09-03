@@ -2,6 +2,8 @@
 @{
 
     var backgroundImage = String.Format(Model.Campaign.CampaignContent.BackgroundCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.BackgroundCloudinaryImage.RelativePath);
+    var headerImage = String.Format(Model.Campaign.CampaignContent.SignUpPage.HeaderCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.SignUpPage.HeaderCloudinaryImage.RelativePath);
+    var footerImage = String.Format(Model.Campaign.CampaignContent.SignUpPage.FooterCloudinaryImage.BaseUrl + "c_fill/" + Model.Campaign.CampaignContent.SignUpPage.FooterCloudinaryImage.RelativePath);
 
     ViewBag.FacebookImage = String.Format(Model.Campaign.CampaignContent.SocialContent.FacebookCloudinaryImage.BaseUrl + "h_628,w_1200,c_fill/" + Model.Campaign.CampaignContent.SocialContent.FacebookCloudinaryImage.RelativePath);
     ViewBag.FacebookTitle = Model.Campaign.CampaignContent.SocialContent.FacebookTitle;
@@ -19,7 +21,7 @@
     <div class="page mx-auto">
         <!--Header Starts Here-->
         <header class="header separator">
-            <img />
+            <img style="width: 100%" src="@headerImage"/>
 
         </header>
         <!--Header End Here-->
@@ -134,6 +136,7 @@
         <!--content End -->
         <!--Footer Start -->
         <footer class="footer">
+            <img style="width: 100%" src="@footerImage"/>
             <div class="footer-text text-center">
                 <div class="container">
                     @Html.Raw(Model.Campaign.CampaignContent.FooterText)

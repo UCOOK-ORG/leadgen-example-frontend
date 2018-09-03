@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using Microsoft.AspNetCore.Mvc;
 using LeadgenFrontend.Models;
 using LeadgenFrontend.Services;
@@ -56,6 +57,24 @@ namespace LeadgenFrontend.Controllers
 
                 HttpContext.Session.SetInt32(lead.CampaignId + "-LeadId", (int)lead.Id);
 
+
+                foreach (var referral in model.Entry.Referral.Where(a => a.Email != null && a.Name != null && a.Surname != null))
+                {
+                    try
+                    {
+                        await _apiService.Client.ApiLeadGenerationSendReferralEmailPostAsync(referral.Email, referral.Name,
+                            referral.Surname, lead.Id);
+                    }
+                    catch (SwaggerException<ErrorResponse> ex)
+                    {
+                        AlertDanger(ex.Result.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        AlertDanger(ex.Message);
+                    }
+                }
+
                 return RedirectToAction("Status", new { slug = model.Entry.Slug });
             }
             catch (SwaggerException<ErrorResponse> ex)
@@ -96,7 +115,7 @@ namespace LeadgenFrontend.Controllers
             }
         }
 
-        [Route("/r/{medium}/{referralId}")]
+        [Route("/r/{referralId}/{medium}")]
         public async Task<IActionResult> Referral(string medium, int referralId)
         {
             try

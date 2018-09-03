@@ -1889,6 +1889,8 @@ namespace LeadgenWebApi
         private string _name;
         private string _surname;
         private string _email;
+        private System.DateTime? _sendDate;
+        private string _status;
         private int? _campaignLeadId;
 
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -1942,6 +1944,34 @@ namespace LeadgenWebApi
                 if (_email != value)
                 {
                     _email = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("sendDate", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTime? SendDate
+        {
+            get { return _sendDate; }
+            set
+            {
+                if (_sendDate != value)
+                {
+                    _sendDate = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Status
+        {
+            get { return _status; }
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
                     RaisePropertyChanged();
                 }
             }
