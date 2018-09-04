@@ -15,6 +15,10 @@ namespace LeadgenFrontend.Models
 
     public class EntryViewModel
     {
+        public EntryViewModel()
+        {
+            Referral = new List<LeadGenReferralViewModel>();
+        }
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
