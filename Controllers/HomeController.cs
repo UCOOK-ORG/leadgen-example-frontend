@@ -35,12 +35,12 @@ namespace LeadgenFrontend.Controllers
             catch (SwaggerException<ErrorResponse> ex)
             {
                 AlertDanger(ex.Result.Message);
-                return Redirect("https://ucook.co.za");
+                return Redirect(Configs.CompanyWebsiteBaseUrl);
             }
             catch (Exception ex)
             {
                 AlertDanger(ex.Message);
-                return Redirect("https://ucook.co.za");
+                return Redirect(Configs.CompanyWebsiteBaseUrl);
             }
 
         }
@@ -88,6 +88,31 @@ namespace LeadgenFrontend.Controllers
                 return RedirectToAction("Index", new { slug = model.Entry.Slug });
             }
         }
+
+        public async Task<IActionResult> SignIn(EntryPageViewModel model)
+        {
+            try
+            {
+                var lead = await _apiService.Client.ApiLeadGenerationSignInPostAsync(model.Entry.CampaignId, model.Entry.Email,
+                    model.Entry.Phone);
+
+                HttpContext.Session.SetInt32(lead.CampaignId + "-LeadId", (int)lead.Id);
+
+                return RedirectToAction("Status", new { slug = model.Entry.Slug });
+            }
+            catch (SwaggerException<ErrorResponse> ex)
+            {
+                AlertDanger(ex.Result.Message);
+                return RedirectToAction("Index", new { slug = model.Entry.Slug });
+            }
+            catch (Exception ex)
+            {
+                AlertDanger(ex.Message);
+                return RedirectToAction("Index", new { slug = model.Entry.Slug });
+            }
+        }
+
+
 
         [Route("/s/{slug}")]
         public async Task<IActionResult> Status(string slug)
@@ -152,20 +177,20 @@ namespace LeadgenFrontend.Controllers
             catch (SwaggerException<ErrorResponse> ex)
             {
                 AlertDanger(ex.Result.Message);
-                return Redirect("https://ucook.co.za");
+                return Redirect(Configs.CompanyWebsiteBaseUrl);
             }
             catch (Exception ex)
             {
                 AlertDanger(ex.Message);
-                return Redirect("https://ucook.co.za");
+                return Redirect(Configs.CompanyWebsiteBaseUrl);
             }
         }
 
-        public IActionResult SendReferral(int leadId, string slug, LeadGenReferralViewModel data)
+        public async Task<IActionResult> SendReferral(int leadId, string slug, LeadGenReferralViewModel data)
         {
             try
             {
-                _apiService.Client.ApiLeadGenerationSendReferralEmailPostAsync(data.Email, data.Name, data.Surname, leadId);
+                await _apiService.Client.ApiLeadGenerationSendReferralEmailPostAsync(data.Email, data.Name, data.Surname, leadId);
 
                 return RedirectToAction("Status", new { slug = slug });
             }

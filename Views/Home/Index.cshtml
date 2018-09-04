@@ -22,14 +22,14 @@
     <div class="page mx-auto">
         <!--Header Starts Here-->
         <header class="header separator">
-            <img style="width: 100%" src="@headerImage"/>
+            <img style="width: 100%" src="@headerImage" />
 
         </header>
         <!--Header End Here-->
         <!--content Start -->
         <div class="content">
             <!--section winner form Start -->
-            <form class="winner-form separator" asp-action="SignUp">
+            <form class="winner-form separator" asp-action="SignUp" id="sign-up-form">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="Entry.CampaignId" value="@Model.Campaign.Id" />
                 <input type="hidden" asp-for="Entry.Slug" value="@Model.Campaign.Slug" />
@@ -42,11 +42,11 @@
                             <h3 class="text-uppercase">Enter your details</h3>
                             <ul class="field-list">
                                 <li class="d-md-flex justify-content-between">
-                                    <div class="field-set first-name">
+                                    <div class="field-set first-name full-name-entry-container">
                                         <input asp-for="Entry.Name" placeholder="Full name" />
                                         <span asp-validation-for="Entry.Name" class="text-danger"></span>
                                     </div>
-                                    <div class="field-set last-name">
+                                    <div class="field-set last-name full-name-entry-container">
                                         <input placeholder="Surname" asp-for="Entry.Surname" />
                                         <span asp-validation-for="Entry.Surname" class="text-danger"></span>
                                     </div>
@@ -65,7 +65,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-6" id="friend-list-container">
                             <h3 class="text-uppercase list-title">Let your friends know</h3>
                             <ul class="frnd-field-list">
                                 <li class="d-md-flex justify-content-between">
@@ -113,7 +113,12 @@
                             </ul>
                         </div>
                     </div>
-                    <span class="form-note d-block">Already entered competition? <a class="link-color" href="#">Click here</a> to check your status</span>
+                    <div id="sign-in-text">
+                        <span class="form-note d-block" id="sign-in-text">Already entered competition? <a class="link-color" id="signInSwitch" href="#">Click here</a> to check your status</span>
+                    </div>
+                    <div id="sign-up-text" style="display: none">
+                        <span class="form-note d-block">or <a class="link-color" id="signUpSwitch" href="#">Sign Up</a></span>
+                    </div>
                     <div class="form-btn text-center">
                         <span asp-validation-for="Entry.TaC" class="text-danger"></span>
                     </div>
@@ -137,7 +142,7 @@
         <!--content End -->
         <!--Footer Start -->
         <footer class="footer">
-            <img style="width: 100%" src="@footerImage"/>
+            <img style="width: 100%" src="@footerImage" />
             <div class="footer-text text-center">
                 <h4>@Html.Raw(Model.Campaign.CampaignContent.FooterText)</h4>
             </div>
@@ -163,5 +168,33 @@
                 return defaultRangeValidator.call(this, value, element, param);
             }
         }
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#signUpSwitch').click(function () {
+                $("#sign-up-form").attr("action", "/Home/SignUp");
+                
+                $('.full-name-entry-container').show();
+                $('#friend-list-container').show();
+                $('#sign-up-text').hide();
+                $('#sign-in-text').show();
+                return false;
+            });
+
+            $('#signInSwitch').click(function () {
+                $("#sign-up-form").attr("action", "/Home/SignIn");
+
+                $('.full-name-entry-container').hide();
+                $('#friend-list-container').hide();
+                $('#sign-in-text').hide();
+                $('#sign-up-text').show();
+                return false;
+            });
+
+        });
+
     </script>
 }
