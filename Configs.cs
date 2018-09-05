@@ -11,5 +11,6 @@ namespace LeadgenFrontend
         public static string FacebookLeadgenAppId = "230384067466881";
         public static string CompanyWebsiteBaseUrl = "https://ucook.co.za";
         public static string ApiUrl = "https://leadgen-silvertree.azurewebsites.net";
+        public static string GoogleTagManager = "GTM-XXXX";
     }
 }
